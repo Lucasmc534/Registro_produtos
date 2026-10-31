@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns="http://www.w3.org/1999/xhtml"
+xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gerenciar Produtos</title>
+    <!-- Bootstrap 5.3.8 CSS CDN -->
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+     <!-- Bootstrap Icons CDN -->
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    </head>
+    <body>
+        <div class="container my-4">
+            <div class="container-fluid py-4 bg-light rounded-3 mb-4 shadow-sm">
+                <h1 class="display-5 fw-bold text-primary">Lista de Produtos</h1>
+                <p class="col-md-8 fs-5 text-muted">
+                    Painel administrativo para controle e gerenciamento de produtos para venda
+                </p>
+                <a class="btn btn-primary btn-lg" href="/products/new">
+                    <i class="bi bi-plus-circle me-1"></i> Criar Novo Produto
+                </a>
+            </div>
+            <div class="container-fluid px-0">
+                <!-- Inclusão do Fragmento de Alertas -->
+                 <div th:replace="~{alert}"></div>
+                 <div class="card shadow-sm border-0">
+                    <div class="card-body p-0">
+                        <table class="table table-hover table-striped align-middle mb-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th scope="col" style="width: 10%;">ID</th>
+                                    <th scope="col" style="width: 30%;">Nome</th>
+                                    <th scope="col" style="width: 20%;">Marca</th>
+                                    <th scope="col" style="width: 20%;">País Fabricação</th>
+                                    <th scope="col" class="text-end" style="width: 10%;">Preço</th>
+                                    <th scope="col" class="text-center" style="width: 10%;">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(listProducts)}">
+                                    <td colspan="6" class="text-center py-4 text-muted">
+                                        <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                                        Nenhum produto cadastrado no momento.
+                                    </td>
+                                </tr>
+                                <tr th:each="product : ${listProducts}">
+                                    <td class="fw-bold" th:text="${product.id}">1</td>
+                                    <td th:text="${product.nome}">Nome do Produto</td>
+                                    <td th:text="${product.marca}">Marca</td>
+                                    <td th:text="${product.paisFabricacao}">País</td>
+                                    <td class="text-end fw-semibold" th:text="${'R$ ' + #numbers.formatDecimal(product.preco, 1, 'POINT', 2, 'COMMA')}"
+                                    >R$ 0,00</td>
+                                    <td class="text-center">
+                                        <!-- Link de edição apenas consulta o formulário. -->
+                                          <a class="btn btn-outline-primary btn-sm me-1"
+                                          title="Editar Produto"
+                                          th:href="@{'/products/edit/' + ${product.id}}"
+                                          role="button">
+                                          <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <!-- Exclusão altera dados: usa POST e recebe token CSRF do Thymeleaf. -->
+                                        <form class="d-inline"
+                                              th:action="@{/products/delete/{id}(id=${product.id})}"
+                                              method="post"
+                                              onsubmit="return confirm('Deseja realmente excluir este produto?');">
+                                            <button class="btn btn-outline-danger btn-sm"
+                                                    type="submit"
+                                                    title="Excluir Produto">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Bootstrap 5 JavaScript Bundle -->
+         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+         crossorigin="anonymous"></script>
+        </body>
+        </html>
